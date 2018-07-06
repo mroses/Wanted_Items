@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Hello, {{logged_user.name}}</h2>
+    <p>Your wish List:</p>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+        
+        {% for item in myitems %}
+        <tr>
+        <p>
+            <td><a href="/wishlist/item/{{item.id}}"> {{ item.name }} </a></td>
+            <td>{{ logged_user.name }}</td>
+            <td>{{ item.created_at }}</td>
+            <td><a href="wishlist/delete">Delete</td></a>
+        </p>
+        </tr>
+        {% endfor %}
+
+        <tr>
+            <td><a href="/item">Item name</a></td>
+            <td>User Name</td>
+            <td>Date</td>
+            <td><a href="wishlist/remove">Remove from my Wishlist</td></a>
+        </tr>
+    </table>
+    <br>
+
+    <p>Other User's Wish List</p>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+
+        {% for item in other_items %}
+        <tr><p>
+            <td><a href="/wishlist/item/{{item.id}}">{{ item.name }}</a></td>
+            <td>{{ other_users.name }}</td>
+            <td>{{ item.created_at }}</td>
+            <td><a href="/wishlist/add">Add to my wishlist</td></a>
+        </p></tr>
+        {% endfor %}
+    </table>
+
+    <h3>Other Users</h3>
+        {% for user in other_users %}
+            {{ user.name }}
+        {% endfor %}
+
+        <p><a href="/wishlist/create">Add Item</a></p>
+        <p><a href="/logout">Logout</a></p>
+
+</body>
+</html>
