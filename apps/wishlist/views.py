@@ -15,6 +15,7 @@ def register(request):
 
 def login(request):
     users = User.objects.filter(username=request.POST['username'])
+    print users
     if len(users) > 0:
         user = users[0]
         if user.password == request.POST['password']:
@@ -26,34 +27,34 @@ def login(request):
 def dashboard(request):
 
     logged_user = User.objects.get(id=request.session["id"])
-    myitems = Item.objects.filter(users=logged_user)
-    other_users = User.objects.exclude(id=logged_user.id)
-    other_items = Item.objects.exclude(users = logged_user) #gets all items but excludes items owned by logged user
-
+    print logged_user
+   
     context = {
-        'myitems': myitems,
         'logged_user': logged_user,
-        'other_items': other_items,
-        'other_users': other_users,
     }
+    
     return render(request, 'wishlist/dashboard.html', context)
     
 def create(request): # add item link from dashboard loads create page
     return render(request, 'wishlist/create.html')
 
-def process(request): #when item is submitted from create page, need to process it before returning to dashboard
+def process(request):
     if request.method == "POST":
         item_name = request.POST["item"]
-        
+    
+        added_by = request.session['id']
+
         if len(item_name) < 4:
             messages.error(request, 'item name must have more than 3 characters')
             return redirect('/wishlist/create')
         else:
-            new_item = Item.objects.create(name=item_name)
+            new_item = Item.objects.create(name=item_name, creator=User.objects.get(id=added_by))
+
             logged_user = User.objects.get(id=request.session["id"])
-            logged_user.items.add(new_item)
-            
-            return redirect('/dashboard')
+            creator = logged_user
+            creator.items.add(new_item)
+                  
+        return redirect('/dashboard')
 
 def item(request, id): 
     item = Item.objects.get(id=id)
@@ -76,10 +77,3 @@ def logout(request):
 
 def delete(request):
     return redirect('/dashboard')
-'''
-def delete(request, item_id):
-    item = Item.objects.get(id=item_id)
-    item.delete()
-    messages.success(request, "item deleted")
-    return redirect('/dashboard')
-'''

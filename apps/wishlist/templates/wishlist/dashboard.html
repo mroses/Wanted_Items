@@ -54,10 +54,18 @@
             <th>Action</th>
         </tr>
 
+
+        {% for user in other_users %}
+        <tr>
+            <td><a href="/wishlist/item/{{item.id}}">{{ item.name }}</a></td>
+
+        </tr>
+        {% endfor %}
         {% for item in other_items %}
         <tr><p>
             <td><a href="/wishlist/item/{{item.id}}">{{ item.name }}</a></td>
-            <td>{{ other_users.name }}</td>
+            <td>
+            </td>
             <td>{{ item.created_at }}</td>
             <td><a href="/wishlist/add">Add to my wishlist</td></a>
         </p></tr>
@@ -68,9 +76,5 @@
         {% for user in other_users %}
             {{ user.name }}
         {% endfor %}
-
-        <p><a href="/wishlist/create">Add Item</a></p>
-        <p><a href="/logout">Logout</a></p>
-
 </body>
 </html>
